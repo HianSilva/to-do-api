@@ -11,7 +11,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Base64;
-import java.util.Objects;
 
 @Component
 public class FilterTaskAuth extends OncePerRequestFilter {
