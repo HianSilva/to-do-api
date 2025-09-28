@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +21,16 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity createTask(@RequestBody TaskModel task, HttpServletRequest request) {
+        var currentDate = LocalDateTime.now();
+        System.out.println(currentDate);
+        if (currentDate.isAfter(task.getStartAt()) || currentDate.isAfter(task.getEndAt())){
+            return ResponseEntity.badRequest().body("Start and End date must be in bigger than current date");
+        }
+
+        if (task.getStartAt().isAfter(task.getEndAt())) {
+            return ResponseEntity.badRequest().body("End date must be in bigger than Start date");
+        }
+
         var userId = (UUID) request.getAttribute("userId");
         task.setOwnerId(userId);
         taskRepository.save(task);
