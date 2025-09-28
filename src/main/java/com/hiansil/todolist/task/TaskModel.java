@@ -8,6 +8,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -24,8 +25,8 @@ public class TaskModel {
     private String title;
     private String description;
     private boolean completed = false;
-    private LocalDate startAt;
-    private LocalDate endAt;
+    private LocalDateTime startAt;
+    private LocalDateTime endAt;
     private String priority;
 
     @CreationTimestamp
