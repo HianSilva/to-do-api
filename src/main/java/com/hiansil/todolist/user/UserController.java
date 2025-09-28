@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 @RestController
 @RequestMapping("/users")
@@ -20,7 +21,10 @@ public class UserController {
             return ResponseEntity.badRequest().body("Username already exists");
         }
 
+        var hashPassword = BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray());
+        user.setPassword(hashPassword);
         var createdUser = userRepository.save(user);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 }
