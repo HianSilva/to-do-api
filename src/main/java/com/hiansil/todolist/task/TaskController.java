@@ -41,4 +41,24 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+
+    @PutMapping("/{title}")
+    public ResponseEntity updateTask(@RequestBody TaskModel task, @PathVariable String title, HttpServletRequest request) {
+        var userId = (UUID) request.getAttribute("userId");
+        System.out.println(userId);
+        var taskFound = taskRepository.findByTitle(title);
+
+        if (taskFound == null) {
+            return ResponseEntity.status(404).body("Task not found");
+        }
+
+        if (!taskFound.getOwnerId().equals(userId)) {
+            return ResponseEntity.status(403).body("You are not allowed to update this task");
+        }
+
+        task.setOwnerId(userId);
+        var updatedTask = taskRepository.save(task);
+
+        return ResponseEntity.ok(updatedTask);
+    }
 }
