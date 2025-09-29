@@ -4,10 +4,7 @@ package com.hiansil.todolist.task;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,7 +19,7 @@ public class TaskController {
     @PostMapping
     public ResponseEntity createTask(@RequestBody TaskModel task, HttpServletRequest request) {
         var currentDate = LocalDateTime.now();
-        System.out.println(currentDate);
+
         if (currentDate.isAfter(task.getStartAt()) || currentDate.isAfter(task.getEndAt())){
             return ResponseEntity.badRequest().body("Start and End date must be in bigger than current date");
         }
@@ -35,6 +32,13 @@ public class TaskController {
         task.setOwnerId(userId);
         taskRepository.save(task);
         return ResponseEntity.status(201).body(task);
+    }
+
+    @GetMapping
+    public ResponseEntity getTasks(HttpServletRequest request) {
+        var userId = (UUID) request.getAttribute("userId");
+        var tasks = taskRepository.findByOwnerId(userId);
+        return ResponseEntity.ok(tasks);
     }
 
 }
